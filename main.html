@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IoT Innovators - Cutting Edge IoT Development</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #4527a0;
+      --secondary-color: #7e57c2;
+      --accent-color: #03dac6;
+      --dark-bg: #121212;
+      --light-bg: #1e1e1e;
+      --text-primary: #ffffff;
+      --text-secondary: #b0bec5;
+      --success-color: #00e676;
+      --warning-color: #ffb300;
+      --error-color: #ff3d00;
+      --gradient-primary: linear-gradient(135deg, #4527a0, #7e57c2);
+      --gradient-accent: linear-gradient(135deg, #03dac6, #00e676);
+      --card-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+      --transition-slow: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      --transition-medium: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      --transition-fast: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y proximity;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--dark-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--secondary-color);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-color);
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .main-heading {
+      font-size: 4rem;
+      background: linear-gradient(to right, var(--accent-color), #00e676);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 15px rgba(3, 218, 198, 0.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .sub-heading {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .sub-heading::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 50%;
+      height: 4px;
+      background: var(--accent-color);
+      transform: skewX(-25deg);
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .section {
+      min-height: 100vh;
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+      scroll-snap-align: start;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .bg-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(var(--dark-bg) 1px, transparent 1px),
+        linear-gradient(90deg, var(--dark-bg) 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-color: rgba(18, 18, 18, 0.5);
+      z-index: 0;
+      opacity: 0.2;
+    }
+
+    .bg-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    .glow-1 {
+      top: -250px;
+      left: -250px;
+      background: var(--secondary-color);
+    }
+
+    .glow-2 {
+      bottom: -250px;
+      right: -250px;
+      background: var(--accent-color);
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition-medium);
+      background: rgba(18, 18, 18, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(126, 87, 194, 0.1);
+    }
+
+    .navbar.scrolled {
+      padding: 1rem 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+      color: var(--accent-color);
+      transform-style: preserve-3d;
+      animation: rotateLogo 8s infinite linear;
+    }
+
+    @keyframes rotateLogo {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .nav-link {
+      color: var(--text-primary);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: var(--transition-fast);
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: var(--transition-fast);
+      transform: skewX(-25deg);
+    }
+
+    .nav-link:hover {
+      color: var(--accent-color);
+    }
+
+    .nav-link:hover::before {
+      width: 100%;
+    }
+
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      text-align: center;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      z-index: 3;
+    }
+
+    .hero-tagline {
+      font-size: 1.5rem;
+      margin-bottom: 2.5rem;
+      color: var(--text-secondary);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1s ease-out forwards 0.8s;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: var(--transition-medium);
+      position: relative;
+      overflow: hidden;
+      border: none;
+      outline: none;
+      text-decoration: none;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-100%) rotate(45deg);
+      transition: var(--transition-medium);
+    }
+
+    .btn:hover::before {
+      transform: translateX(100%) rotate(45deg);
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: var(--text-primary);
+      box-shadow: 0 5px 15px rgba(126, 87, 194, 0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 8px 25px rgba(126, 87, 194, 0.6);
+      transform: translateY(-3px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .btn-outline:hover {
+      background: rgba(3, 218, 198, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(3, 218, 198, 0.3);
+    }
+
+    .hero-model-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .services-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .service-card {
+      background: var(--light-bg);
+      border-radius: 15px;
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition-medium);
+      transform-style: preserve-3d;
+      transform: perspective(1000px);
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(126, 87, 194, 0.2);
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--accent-color);
+    }
+
+    .service-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+      position: relative;
+    }
+
+    .service-icon::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: rgba(3, 218, 198, 0.1);
+      border-radius: 50%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      box-shadow: 0 0 20px rgba(3, 218, 198, 0.4);
+    }
+
+    .service-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .service-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--accent-color) 0%, rgba(3, 218, 198, 0) 70%);
+      opacity: 0.1;
+      pointer-events: none;
+      transition: var(--transition-slow);
+    }
+
+    .service-card:hover::before {
+      transform: scale(2);
+      opacity: 0.2;
+    }
+
+    .projects-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .project-card {
+      position: relative;
+      background: var(--light-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transform-style: preserve-3d;
+      transition: var(--transition-medium);
+      height: 400px;
+      border: 1px solid rgba(126, 87, 194, 0.2);
+    }
+
+    .project-card:hover {
+      transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border-color: var(--accent-color);
+    }
+
+    .project-thumbnail {
+      height: 200px;
+      background-color: var(--secondary-color);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .project-icon {
+      font-size: 5rem;
+      color: rgba(255, 255, 255, 0.8);
+      filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+      transform-style: preserve-3d;
+      transition: var(--transition-medium);
+    }
+
+    .project-card:hover .project-icon {
+      transform: scale(1.2) translateZ(50px);
+    }
+
+    .project-content {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .project-title {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .project-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition-fast);
+    }
+
+    .project-link:hover {
+      gap: 0.8rem;
+      text-shadow: 0 0 10px rgba(3, 218, 198, 0.5);
+    }
+
+    .reviews-container {
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    .reviews-carousel {
+      display: flex;
+      gap: 2rem;
+      overflow-x: auto;
+      padding: 2rem 0;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .reviews-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .review-card {
+      min-width: 350px;
+      background: var(--light-bg);
+      border-radius: 15px;
+      padding: 2rem;
+      position: relative;
+      scroll-snap-align: start;
+      transform-style: preserve-3d;
+      transition: var(--transition-medium);
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(126, 87, 194, 0.2);
+    }
+
+    .review-card:hover {
+      transform: scale(1.03) translateZ(20px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--accent-color);
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .reviewer-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--accent-color);
+      box-shadow: 0 0 15px rgba(3, 218, 198, 0.5);
+    }
+
+    .reviewer-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .reviewer-info h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .reviewer-info span {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .review-stars {
+      color: var(--warning-color);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .review-content {
+      font-style: italic;
+      color: var(--text-secondary);
+      position: relative;
+    }
+
+    .review-content::before {
+      content: '"';
+      font-size: 4rem;
+      position: absolute;
+      top: -30px;
+      left: -10px;
+      opacity: 0.1;
+      color: var(--accent-color);
+    }
+
+    .team-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .team-member {
+      background: var(--light-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transform-style: preserve-3d;
+      transition: var(--transition-medium);
+      border: 1px solid rgba(126, 87, 194, 0.2);
+    }
+
+    .team-member:hover {
+      transform: translateY(-10px) rotateX(5deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--accent-color);
+    }
+
+    .member-photo {
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .member-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition-medium);
+    }
+
+    .team-member:hover .member-photo img {
+      transform: scale(1.1);
+    }
+
+    .member-info {
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .member-name {
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .member-role {
+      color: var(--accent-color);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .member-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-icon {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(126, 87, 194, 0.2);
+      border-radius: 50%;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: var(--transition-fast);
+    }
+
+    .social-icon:hover {
+      background: var(--accent-color);
+      color: var(--dark-bg);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(3, 218, 198, 0.4);
+    }
+
+    .footer {
+      background: var(--light-bg);
+      padding: 4rem 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-col h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .footer-col h3::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--accent-color);
+      transform: skewX(-25deg);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .footer-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-link:hover {
+      color: var(--accent-color);
+      transform: translateX(5px);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .footer-social-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(126, 87, 194, 0.2);
+      border-radius: 50%;
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      transition: var(--transition-fast);
+    }
+
+    .footer-social-icon:hover {
+      background: var(--accent-color);
+      color: var(--dark-bg);
+      transform: translateY(-3px) rotateY(10deg);
+      box-shadow: 0 5px 10px rgba(3, 218, 198, 0.4);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(126, 87, 194, 0.2);
+      color: var(--text-secondary);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-medium);
+    }
+
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: var(--light-bg);
+      border-radius: 15px;
+      padding: 2.5rem;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      transform: scale(0.8);
+      transition: var(--transition-medium);
+      border: 1px solid rgba(126, 87, 194, 0.2);
+      box-shadow: var(--card-shadow);
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .modal-close:hover {
+      color: var(--error-color);
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes rotateY {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    @keyframes rotateZ {
+      0% { transform: rotateZ(0deg); }
+      100% { transform: rotateZ(360deg); }
+    }
+
+    .float {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .pulse {
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .rotate-y {
+      animation: rotateY 10s linear infinite;
+    }
+
+    .rotate-z {
+      animation: rotateZ 15s linear infinite;
+    }
+
+    @media (max-width: 1200px) {
+      .main-heading {
+        font-size: 3.5rem;
+      }
+      
+      .sub-heading {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .hamburger {
+        display: block;
+      }
+      
+      .mobile-nav {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 300px;
+        height: 100vh;
+        background: var(--light-bg);
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        padding: 4rem 2rem;
+        transition: var(--transition-medium);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+      }
+      
+      .mobile-nav.active {
+        right: 0;
+      }
+      
+      .mobile-nav-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+      
+      .mobile-nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .mobile-nav-link {
+        color: var(--text-primary);
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        padding: 0.5rem 0;
+      }
+      
+      .main-heading {
+        font-size: 3rem;
+      }
+      
+      .service-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .section {
+        padding: 100px 0 60px;
+      }
+      
+      .main-heading {
+        font-size: 2.5rem;
+      }
+      
+      .sub-heading {
+        font-size: 1.8rem;
+      }
+      
+      .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .service-card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .projects-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        padding: 0 1.5rem;
+      }
+      
+      .main-heading {
+        font-size: 2rem;
+      }
+      
+      .sub-heading {
+        font-size: 1.5rem;
+      }
+      
+      .btn {
+        padding: 0.8rem 1.5rem;
+      }
+      
+      .services-container,
+      .projects-container,
+      .team-container {
+        gap: 1.5rem;
+      }
+      
+      .review-card {
+        min-width: 280px;
+      }
+      
+      .footer-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-microchip"></i>
+      </div>
+      <div class="logo-text">IoT Innovators</div>
+    </div>
+    <div class="nav-links">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#reviews" class="nav-link">Reviews</a>
+      <a href="#team" class="nav-link">Our Team</a>
+    </div>
+    <button class="hamburger" id="hamburgerBtn">
+      <i class="fas fa-bars"></i>
+    </button>
+  </nav>
+  
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="mobile-nav-links">
+      <a href="#home" class="mobile-nav-link">Home</a>
+      <a href="#services" class="mobile-nav-link">Services</a>
+      <a href="#projects" class="mobile-nav-link">Projects</a>
+      <a href="#reviews" class="mobile-nav-link">Reviews</a>
+      <a href="#team" class="mobile-nav-link">Our Team</a>
+    </div>
+  </div>
+
+  <section class="section hero" id="home">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="main-heading">Transform Your IoT Ideas Into Reality</h1>
+        <p class="hero-tagline">Student-focused IoT project development and expert mentorship to bring innovation to life</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" id="ideaBtn">
+            <i class="fas fa-lightbulb"></i> Share Your Idea
+          </button>
+          <a href="#projects" class="btn btn-outline">
+            <i class="fas fa-project-diagram"></i> Explore Projects
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-model-container" id="heroCanvas"></div>
+  </section>
+
+  <section class="section" id="services">
+    <div class="bg-grid"></div>
+    <div class="container">
+      <h2 class="sub-heading">Our Services</h2>
+      <div class="services-container">
+        <div class="service-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+          <div class="service-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3 class="service-title">Concept Development</h3>
+          <p class="service-description">We transform your raw ideas into viable IoT concepts through detailed analysis, market research, and feasibility studies to ensure your project has a solid foundation.</p>
+        </div>
+        
+        <div class="service-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+          <div class="service-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <h3 class="service-title">Technical Mentorship</h3>
+          <p class="service-description">Receive personalized guidance from our IoT experts throughout your project journey with one-on-one sessions tailored to your learning pace and project needs.</p>
+        </div>
+        
+        <div class="service-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+          <div class="service-icon">
+            <i class="fas fa-microchip"></i>
+          </div>
+          <h3 class="service-title">Component Sourcing</h3>
+          <p class="service-description">We help you identify, select, and procure the optimal hardware components for your specific project requirements, ensuring quality and cost-effectiveness.</p>
+        </div>
+        
+        <div class="service-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+          <div class="service-icon">
+            <i class="fas fa-file-code"></i>
+          </div>
+          <h3 class="service-title">Project Documentation</h3>
+          <p class="service-description">Comprehensive documentation support including technical writeups, system architecture diagrams, code annotation, and project presentations for academic submissions.</p>
+        </div>
+        
+        <div class="service-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+          <div class="service-icon">
+            <i class="fas fa-code"></i>
+          </div>
+          <h3 class="service-title">Custom Firmware Development</h3>
+          <p class="service-description">We create tailored firmware solutions for microcontrollers and IoT devices that integrate perfectly with your hardware setup and project requirements.</p>
+        </div>
+        
+        <div class="service-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+          <div class="service-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3 class="service-title">UI/UX Design & Development</h3>
+          <p class="service-description">Design and development of intuitive interfaces for your IoT applications, including mobile apps, web dashboards, and interactive control panels.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="container">
+      <h2 class="sub-heading">Our Projects</h2>
+      <div class="projects-container">
+        <div class="project-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+          <div class="project-thumbnail">
+            <i class="project-icon fas fa-robot rotate-y"></i>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">Smart Rover</h3>
+            <p class="project-description">Autonomous navigation system with multi-sensor integration, obstacle avoidance, and real-time tracking through a custom web interface.</p>
+            <a href="#" class="project-link">Learn More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        
+        <div class="project-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+          <div class="project-thumbnail">
+            <i class="project-icon fas fa-traffic-light rotate-y"></i>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">TraffiCore</h3>
+            <p class="project-description">AI-powered traffic management system using ESP32 cameras and YOLO object detection for optimizing traffic signal timing in real-time.</p>
+            <a href="#" class="project-link">Learn More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        
+        <div class="project-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+          <div class="project-thumbnail">
+            <i class="project-icon fas fa-temperature-high rotate-y"></i>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">Smart Heater</h3>
+            <p class="project-description">Web-controlled heating system with custom alert animations, temperature presets, and energy consumption monitoring dashboard.</p>
+            <a href="#" class="project-link">Learn More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        
+        <div class="project-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+          <div class="project-thumbnail">
+            <i class="project-icon fas fa-leaf rotate-y"></i>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">AquaFarm</h3>
+            <p class="project-description">Automated hydroponics system with environmental monitoring, nutrient delivery control, and data visualization via mobile app.</p>
+            <a href="#" class="project-link">Learn More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        
+        <div class="project-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+          <div class="project-thumbnail">
+            <i class="project-icon fas fa-shield-alt rotate-y"></i>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">SecureHome</h3>
+            <p class="project-description">Comprehensive home security system with facial recognition, motion detection, and real-time alerts through a secure mobile application.</p>
+            <a href="#" class="project-link">Learn More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        
+        <div class="project-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+          <div class="project-thumbnail">
+            <i class="project-icon fas fa-hand-holding-medical rotate-y"></i>
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">HealthMonitor</h3>
+            <p class="project-description">Wearable health monitoring device with heart rate, blood oxygen, and activity tracking features connected to a cloud-based analytics platform.</p>
+            <a href="#" class="project-link">Learn More <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reviews">
+    <div class="bg-grid"></div>
+    <div class="container">
+      <h2 class="sub-heading">What Students Say</h2>
+      <div class="reviews-container">
+        <div class="reviews-carousel" id="reviewsCarousel">
+          <div class="review-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+            <div class="review-header">
+              <div class="reviewer-avatar">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Aarav M.">
+              </div>
+              <div class="reviewer-info">
+                <h4>Aarav M.</h4>
+                <span>Computer Engineering Student</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="review-content">
+              <p>Working with IoT Innovators was a game-changer for my final year project. Their technical mentorship and component sourcing made the entire process smooth and stress-free. I couldn't have achieved such results without their guidance!</p>
+            </div>
+          </div>
+          
+          <div class="review-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+            <div class="review-header">
+              <div class="reviewer-avatar">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sneha K.">
+              </div>
+              <div class="reviewer-info">
+                <h4>Sneha K.</h4>
+                <span>Electronics Engineering Student</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <div class="review-content">
+              <p>The clear mentorship and amazing guidance from IoT Innovators helped me transform my vague idea into a working prototype in just 8 weeks. Highly recommend to all engineering students struggling with IoT projects!</p>
+            </div>
+          </div>
+          
+          <div class="review-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+            <div class="review-header">
+              <div class="reviewer-avatar">
+                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Ravi P.">
+              </div>
+              <div class="reviewer-info">
+                <h4>Ravi P.</h4>
+                <span>Computer Science Student</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="review-content">
+              <p>The custom dashboards and documentation provided by IoT Innovators impressed not just me but my entire faculty. Their professional work and attention to detail helped me secure the highest grade in my class!</p>
+            </div>
+          </div>
+          
+          <div class="review-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+            <div class="review-header">
+              <div class="reviewer-avatar">
+                <img src="https://randomuser.me/api/portraits/women/23.jpg" alt="Priya J.">
+              </div>
+              <div class="reviewer-info">
+                <h4>Priya J.</h4>
+                <span>IoT Specialization Student</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="review-content">
+              <p>As someone who was intimidated by hardware, IoT Innovators made the journey accessible and exciting. Their step-by-step guidance and practical approach to problem-solving made all the difference in my learning journey.</p>
+            </div>
+          </div>
+          
+          <div class="review-card" data-tilt data-tilt-max="5" data-tilt-speed="400">
+            <div class="review-header">
+              <div class="reviewer-avatar">
+                <img src="https://randomuser.me/api/portraits/men/89.jpg" alt="Kamal S.">
+              </div>
+              <div class="reviewer-info">
+                <h4>Kamal S.</h4>
+                <span>Mechatronics Student</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="review-content">
+              <p>My smart agriculture project would have been impossible without IoT Innovators. Their expertise in sensor integration and data analytics helped me create a solution that's now being considered for implementation by local farmers!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="team">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="container">
+      <h2 class="sub-heading">Our Team</h2>
+      <div class="team-container">
+        <div class="team-member" data-tilt data-tilt-max="10" data-tilt-speed="400">
+          <div class="member-photo">
+            <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="Vikram Sharma">
+          </div>
+          <div class="member-info">
+            <h3 class="member-name">Vikram Sharma</h3>
+            <span class="member-role">Founder & IoT Architect</span>
+            <p class="member-description">Embedded systems expert with 10+ years of experience in IoT solutions and connected device ecosystems.</p>
+            <div class="social-links">
+              <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="team-member" data-tilt data-tilt-max="10" data-tilt-speed="400">
+          <div class="member-photo">
+            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Anjali Desai">
+          </div>
+          <div class="member-info">
+            <h3 class="member-name">Anjali Desai</h3>
+            <span class="member-role">Technical Lead</span>
+            <p class="member-description">Hardware design specialist with expertise in sensor integration and power-efficient IoT systems.</p>
+            <div class="social-links">
+              <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="team-member" data-tilt data-tilt-max="10" data-tilt-speed="400">
+          <div class="member-photo">
+            <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Rahul Mehta">
+          </div>
+          <div class="member-info">
+            <h3 class="member-name">Rahul Mehta</h3>
+            <span class="member-role">Software Developer</span>
+            <p class="member-description">Full-stack developer specializing in IoT platforms, real-time data processing, and intuitive interfaces.</p>
+            <div class="social-links">
+              <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="team-member" data-tilt data-tilt-max="10" data-tilt-speed="400">
+          <div class="member-photo">
+            <img src="https://randomuser.me/api/portraits/women/52.jpg" alt="Neha Kapoor">
+          </div>
+          <div class="member-info">
+            <h3 class="member-name">Neha Kapoor</h3>
+            <span class="member-role">UX/UI Designer</span>
+            <p class="member-description">User experience expert focused on creating intuitive interfaces for complex IoT systems and dashboards.</p>
+            <div class="social-links">
+              <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-dribbble"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="bg-grid"></div>
+    <div class="container">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h3>IoT Innovators</h3>
+          <p>Transforming student ideas into cutting-edge IoT solutions through expert mentorship and collaborative development.</p>
+          <div class="footer-social">
+            <a href="#" class="footer-social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="footer-social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="footer-social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="footer-social-icon"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <div class="footer-links">
+            <a href="#home" class="footer-link"><i class="fas fa-chevron-right"></i> Home</a>
+            <a href="#services" class="footer-link"><i class="fas fa-chevron-right"></i> Services</a>
+            <a href="#projects" class="footer-link"><i class="fas fa-chevron-right"></i> Projects</a>
+            <a href="#team" class="footer-link"><i class="fas fa-chevron-right"></i> Our Team</a>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Services</h3>
+          <div class="footer-links">
+            <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Concept Development</a>
+            <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Technical Mentorship</a>
+            <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Component Sourcing</a>
+            <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Firmware Development</a>
+            <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> UI/UX Design</a>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2023 IoT Innovators. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="ideaModal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2 class="modal-title">Share Your IoT Idea</h2>
+      <form id="ideaForm">
+        <div class="form-group">
+          <input type="text" class="form-control" id="ideaName" placeholder=" " required>
+          <label for="ideaName" class="form-label">Your Name</label>
+        </div>
+        <div class="form-group">
+          <input type="email" class="form-control" id="ideaEmail" placeholder=" " required>
+          <label for="ideaEmail" class="form-label">Email Address</label>
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="ideaTitle" placeholder=" " required>
+          <label for="ideaTitle" class="form-label">Project Title</label>
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" id="ideaDescription" placeholder=" " required></textarea>
+          <label for="ideaDescription" class="form-label">Project Description</label>
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" id="ideaRequirements" placeholder=" "></textarea>
+          <label for="ideaRequirements" class="form-label">Specific Requirements</label>
+        </div>
+        <button type="submit" class="submit-btn">Submit Idea <i class="fas fa-lightbulb"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="projectModal">
+    <div class="modal-content">
+      <button class="modal-close" id="projectModalClose">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2 class="modal-title" id="projectModalTitle">Project Details</h2>
+      <div id="projectModalContent">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileNav = document.getElementById('mobileNav');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      
+      hamburgerBtn.addEventListener('click', () => mobileNav.classList.add('active'));
+      mobileNavClose.addEventListener('click', () => mobileNav.classList.remove('active'));
+      document.addEventListener('click', (e) => {
+        if (!mobileNav.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+          mobileNav.classList.remove('active');
+        }
+      });
+
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+      });
+
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+
+      VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+        max: 15,
+        speed: 400,
+        glare: true,
+        'max-glare': 0.2,
+      });
+
+      const ideaModal = document.getElementById('ideaModal');
+      const modalClose = document.getElementById('modalClose');
+      const projectModal = document.getElementById('projectModal');
+      const projectModalClose = document.getElementById('projectModalClose');
+
+      document.getElementById('ideaBtn').addEventListener('click', () => {
+        ideaModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      });
+
+      [modalClose, projectModalClose].forEach(btn => {
+        btn.addEventListener('click', () => {
+          ideaModal.classList.remove('show');
+          projectModal.classList.remove('show');
+          document.body.style.overflow = '';
+        });
+      });
+
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+          }
+        });
+      });
+
+      document.getElementById('ideaForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Thank you for sharing your idea! Our team will review it and get back to you.');
+        e.target.reset();
+        ideaModal.classList.remove('show');
+        document.body.style.overflow = '';
+      });
+
+      document.querySelectorAll('.project-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const card = this.closest('.project-card');
+          const title = card.querySelector('.project-title').textContent;
+          const description = card.querySelector('.project-description').textContent;
+          
+          document.getElementById('projectModalTitle').textContent = title;
+          document.getElementById('projectModalContent').innerHTML = `
+            <div class="project-modal-thumbnail" style="height: 200px; background: var(--secondary-color); 
+              display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+              ${card.querySelector('.project-thumbnail').innerHTML}
+            </div>
+            <p style="margin-bottom: 1.5rem;">${description}</p>
+            <h3 style="margin-bottom: 1rem; color: var(--accent-color);">Project Details</h3>
+            <p style="margin-bottom: 1.5rem;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. 
+              Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.</p>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+              <i class="fas fa-lightbulb"></i> Get Similar Project
+            </button>
+          `;
+          projectModal.classList.add('show');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.utils.toArray('.section').forEach(section => {
+        gsap.from(section, {
+          scrollTrigger: { trigger: section, start: 'top 80%', toggleActions: 'play none none none' },
+          opacity: 0, y: 50, duration: 1, ease: 'power2.out'
+        });
+      });
+
+      const heroCanvas = document.getElementById('heroCanvas');
+      if (WebGLRenderingContext && heroCanvas) {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        heroCanvas.appendChild(renderer.domElement);
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 1000; i++) {
+          vertices.push(
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1
+          );
+        }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        
+        const material = new THREE.PointsMaterial({
+          size: 0.02,
+          color: 0x7e57c2,
+          transparent: true,
+          opacity: 0.8,
+          blending: THREE.AdditiveBlending
+        });
+        
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+        camera.position.z = 3;
+
+        function animate() {
+          requestAnimationFrame(animate);
+          particles.rotation.x += 0.0005;
+          particles.rotation.y += 0.0005;
+          renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+      }
+
+      const reviewsCarousel = document.getElementById('reviewsCarousel');
+      if (reviewsCarousel) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        reviewsCarousel.addEventListener('mousedown', (e) => {
+          isDown = true;
+          startX = e.pageX - reviewsCarousel.offsetLeft;
+          scrollLeft = reviewsCarousel.scrollLeft;
+        });
+
+        reviewsCarousel.addEventListener('mouseleave', () => isDown = false);
+        reviewsCarousel.addEventListener('mouseup', () => isDown = false);
+
+        reviewsCarousel.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - reviewsCarousel.offsetLeft;
+          const walk = (x - startX) * 2;
+          reviewsCarousel.scrollLeft = scrollLeft - walk;
+        });
+
+        setInterval(() => {
+          if (reviewsCarousel.scrollLeft + reviewsCarousel.offsetWidth >= reviewsCarousel.scrollWidth) {
+            reviewsCarousel.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            reviewsCarousel.scrollBy({ left: 350, behavior: 'smooth' });
+          }
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>
